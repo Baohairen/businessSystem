@@ -1,0 +1,46 @@
+.login-title{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  text-align: center;
+}
+/* 登录页面框 */
+.loginbox{
+  position: absolute;
+  width: 100%;
+  min-width: 370px;
+  height: 100%;
+  background-position: center;
+  background-size: cover;
+}
+/* 登录表单框 */
+.login-formbox{
+  position: absolute;
+  margin: 150px auto;
+  right: 18%;
+  padding: 100px 50px 30px;
+  min-width: 370px;
+  color: #0f0f0f;
+  background-color: #f0f0f0;
+  background-color: rgba(255,255,255,0.5);
+}
+.login-formbox h1{
+  color: #0f1e2c;
+}
+.login-formbox .btn{
+  background: #C98A43;
+  border: 1px solid #9C7C5E;
+  font-size: 16px;
+  color: #f0f0f0;
+}
+.login-formbox .btn:hover{
+  background-color: #C98A43;
+}
+.rember{
+  position: relative;
+  top: -5px;
+  left:30px;
+  font-size: 16px;
+  color: #758794;
+}

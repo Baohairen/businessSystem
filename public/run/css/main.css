@@ -1,0 +1,262 @@
+button{
+  outline: none!important;
+}
+.manage{
+  display: none;
+}
+#user_page{
+  display: block;
+}
+a{
+  cursor: pointer;
+}
+.page{
+  height: 120px!important;
+  border: none!important;
+}
+.pages{
+  list-style: none;
+  display: inline-block;
+  margin: 20px auto;
+}
+.pages li{
+  float: left;
+}
+.pages li a{
+  padding: 6px 12px;
+  margin-left: -2px;
+  text-decoration: none;
+  background-color: #fff;
+  border: 1px solid #ddd;
+}
+.pages li a.actives{
+  background-color: #337ab7;
+  border-color: #337ab7;
+  color: white;
+}
+#myTab a{
+  font-size: 16px;
+}
+#myTab2 a{
+  font-size: 15px;
+}
+/* foods-list */
+.foods-list{
+  padding-bottom: 20px;
+}
+.foods-list div{
+  height: 100px;
+  line-height: 100px;
+  text-align: center;
+  border-bottom: 1px solid #efefef;
+  overflow: hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+#product_page img{
+  width: 100px;
+  height: 100px;
+}
+.order .foods-list div{
+  height: 50px;
+  line-height: 50px;
+}
+/*用户管理*/
+.manage .clear{
+  clear: both;
+}
+.manage .adduser{
+  float: right;
+  padding-right: 8px;
+}
+.manage .none-padding {
+  padding: 0 !important;
+}
+.manage .marginbottom20px {
+  margin-bottom: 20px;
+}
+.manage .marginbottom30px {
+  margin-bottom: 30px;
+}
+.manage table{
+  text-align: center;
+}
+.manage table tr th,td{
+  text-align: center;
+  vertical-align: middle!important;
+}
+.manage .searchbox{
+  position: relative;
+  float: right;
+  margin-left: 20px;
+}
+.manage .searchbox input{
+  text-indent: 20px;
+}
+.manage .searchicon{
+  position: absolute;
+  line-height: 34px;
+  color: #ccc;
+  left:10px;
+}
+.manage .searchinput{
+  text-indent: 20px;
+}
+.manage .createuser,.updateuser .marginbottom20px {
+  margin-bottom: 20px;
+}
+.manage .createuser,.updateuser .marginbottom30px {
+  margin-bottom: 30px;
+}
+.manage .select-page {
+  width: 50px;
+  text-align: center;
+}
+.manage .pagination li a input {
+  padding: 0;
+  margin: -5px 0;
+}
+
+.manage .breadcrumb{
+  display: block;
+  background-color: #fff;
+  padding:8px 0; 
+  margin-bottom: 0;
+  position: relative;
+  float: right;
+  cursor: pointer;
+}
+.manage .breadcrumb li a{
+  color: #337ab7;
+}
+.manage .breadcrumb li.active a{
+  color: #777;
+}
+.manage .well{
+  background-color: #fff;
+  min-height: 300px;
+}
+#product_page .well{
+  height: 640px;
+}
+.manage .title{
+  padding: 10px;
+  font-size: 18px;
+}
+/*产品管理二级菜单*/
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu > .dropdown-menu {
+  top:-6px;
+  left: 100%;
+}
+.dropdown-submenu:hover > .dropdown-menu {
+  display: block;
+}
+.dropdown-submenu > a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #ccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+/*文件上传*/
+.imgDiv{
+  position: relative;
+}
+.imgDiv .red{
+  color: red;
+  position: absolute;
+  bottom: 0;
+  left: 120px;
+}
+.imgDiv .file{
+  position: absolute;
+  display: block;
+  width: 100px;
+  height: 100px;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  z-index: 2;
+}
+/*订单详情*/
+.orderInfo{
+  padding: 10px;
+  position: relative;
+}
+.orderInfo div{
+  height: 30px;
+}
+.orderInfo div span{
+  font-size: 16px;
+  line-height: 30px;
+}
+.orderInfo div span.right{
+  margin-left: 10px;
+}
+.orderInfo div span.red{
+  color: red;
+  font-size: 20px;
+}
+.orderInfo .remark{
+  height: 150px;
+  width: 300px;
+  padding-left: 10px;
+  border-left: 4px solid #eee;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+.orderInfoTitle{
+  background-color: rgb(246,246,246);
+}
+.all_price{
+  margin-top: 20px;
+}
+.all_price div{
+  border: none;
+  height: 70px!important;
+  line-height: 70px!important;
+  text-align: right;
+  padding-right: 20px;
+}
+.orderInfoTitle .left{
+  font-size: 16px;
+}
+.orderInfoTitle .right{
+  font-size: 20px;
+  color: red;
+  margin-left: 10px;
+}
+.orderInfoTitle a{
+  display: none;
+}
+.foodInfos{
+  height: 100px!important;
+  line-height: 100px!important;
+}
+.foodInfos div{
+  height: 100px!important;
+  line-height: 100px!important;
+}
+.foodInfos div img{
+  width: 100px;
+  height: 100px;
+  margin-right: 10px;
+}
+.foodInfos div.col-md-4{
+  text-align: left;
+  padding-left: 20px;
+}
+#comment_page .foods-list div:not(.page){
+  height: 50px!important;
+  line-height: 50px!important;
+}

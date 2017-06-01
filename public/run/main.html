@@ -1,0 +1,925 @@
+<div class="container">
+  <header>
+    <div class="myheader">
+      <span class="title">必胜客订餐管理平台</span>
+      <div class="text-right">
+        <span ><a><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;{{realName}}</a></span>
+        &nbsp;&nbsp;
+        <span><a ng-click="signOut()" href=""><span class="glyphicon glyphicon-log-out"></span>&nbsp;&nbsp;退出</a></span>
+        &nbsp;&nbsp;
+      </div>
+    </div>
+  </header>
+  <div class="">
+    <div class="col-md-2" style="padding-left:0px">
+      <nav class="navbar" style="background-color:#408ab4;min-height:450px">
+        <ul class="nav nav-stacked" style="color:#fff">
+          <li class="text-left">
+            <a class="myli" id="user">
+              <i class="fa fa-user"></i>&nbsp;&nbsp;用户管理
+            </a>
+          </li>
+          <li class="text-left">
+            <a class="myli" id="custom">
+              <i class="fa fa-users"></i>&nbsp;&nbsp;客户管理
+            </a>
+          </li>
+          <li class="text-left">
+            <a class="myli" id="product">
+              <i class="fa fa-cutlery"></i>&nbsp;&nbsp;产品管理
+            </a>
+          </li>
+          <li class="text-left">
+            <a class="myli" id="order">
+              <i class="fa fa-indent"></i>&nbsp;&nbsp;订单管理
+            </a>
+          </li>
+          <li class="text-left">
+            <a class="myli" id="comment">
+              <i class="fa fa-comment"></i>&nbsp;&nbsp;评论管理
+            </a>
+          </li>
+        </ul>     
+      </nav>
+    </div>
+    <div ui-view class="col-md-10" style="background-color:#fff;min-height:450px">
+      <!-- 用户管理 -->
+      <div class="users manage" id="user_page">
+        <ul class="breadcrumb">
+          <li><a ng-click="toHome()">主页</a></li>
+          <li class="active" id="user_manage"><a ng-click="toAdmin()">用户管理</a></li>
+        </ul>
+        <div class="title"><i class="fa fa-user"></i>&nbsp;&nbsp;用户管理</div>
+        <div class="well">
+          <!-- 所有用户 -->
+          <div ng-show="allAdmin">
+            <table class="table" st-table="displayedCollection" st-safe-src="data">
+              <thead>
+                <tr>
+                  <th colspan="6">
+                    <div class="searchbox col-sm-12 none-padding">
+                      <i class="searchicon glyphicon glyphicon-search"></i>
+                      <input class="form-control" st-search placeholder="请输入姓名、用户名、性别、职务 查询" class="input form-control" type="search"/>
+                    </div>
+                  </th>
+                  <th colspan="2">
+                    <div class="adduser">
+                      <a class="btn btn-success btn-sm" ng-click="addAdmins()">
+                        <i class="fa fa-user-plus"></i>&nbsp;新增用户
+                      </a>
+                    </div>
+                  </th>
+                </tr>
+                <tr>
+                  <th>序号</th>
+                  <th st-sort="adminname" class="col-sm-2" style="cursor: pointer;">用户名</th>
+                  <th st-sort="realName" style="cursor: pointer;">真实姓名</th>
+                  <th st-sort="gender" style="cursor: pointer;">性别</th>
+                  <th st-sort="identify" style="cursor: pointer;">职务</th>
+                  <th st-sort="createTime">创建时间</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="item in displayedCollection">
+                  <td>{{$index+1}}</td>
+                  <td>{{item.adminname}}</td>
+                  <td>{{item.realName}}</td>
+                  <td>{{item.gender}}</td>
+                  <td>{{item.identify}}</td>
+                  <td>{{item.createTime | date:'yyyy-MM-dd HH:mm:ss'}}</td>
+                  <td><a class="btn btn-success btn-sm" ng-click="updates(item.adminid)"><i class="glyphicon glyphicon-edit"></i>&nbsp;编辑</a></td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td colspan="8" class="text-center">
+                    <ul class="pages" ng-show="dataLength > 10">
+                      <li><a href="" ng-click="prevPage()">上一页</a></li>
+                      <li><a href="" ng-class="{'actives':currentPage == '1'}" ng-click="currentPages(1)">1</a></li>
+                      <li><a href="" ng-class="{'actives':currentPage == '2'}" ng-click="currentPages(2)">2</a></li>
+                      <li ng-show="dataLength >20" ng-class="{'actives':currentPage == '3'}" ng-click="currentPages(3)"><a href="">3</a></li>
+                      <li ng-show="dataLength >30" ng-class="{'actives':currentPage == '4'}" ng-click="currentPages(4)"><a href="">3</a></li>
+                      <li ng-show="dataLength >40" ng-class="{'actives':currentPage == '5'}" ng-click="currentPages(5)"><a href="">3</a></li>
+                      <li ng-show="dataLength >50" ng-class="{'actives':currentPage == '6'}" ng-click="currentPages(6)"><a href="">3</a></li>
+                      <li ng-show="dataLength >60" ng-class="{'actives':currentPage == '7'}" ng-click="currentPages(7)"><a href="">3</a></li>
+                      <li ng-show="dataLength >70" ng-class="{'actives':currentPage == '8'}" ng-click="currentPages(8)"><a href="">3</a></li>
+                      <li><a href="" ng-click="nextPage()">下一页</a></li>
+                    </ul>
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+          <!-- 新增用户 -->
+          <div ng-show="addAdmin">
+            <form class="form-horizontal" name="form_add" role="form">
+              <div class="col-sm-12">
+                <div class="row clearfix">
+                  <div class="col-md-11 col-sm-11 column">
+                    <div class="formbox">
+                      <div class="form-group" ng-class="{'has-error': form_add.realname.$invalid && !form_add.realname.$pristine}">
+                        <label for="firstname" class="col-sm-2 control-label">真实姓名</label>
+                        <div class="col-sm-10">
+                          <input type="text" class="form-control" name="realname" ng-model="realname_add" placeholder="姓名" ng-minlength="2" ng-maxlength="20" required>
+                          <div ng-if="form_add.realname.$invalid && form_add.realname.$dirty">
+                            <p class="help-block" ng-show="form_add.realname.$error.required">姓名必填</p>
+                            <p class="help-block" ng-show="form_add.realname.$error.minlength || form_add.realname.$error.maxlength">姓名的长度在2到20之间</p>
+                          </div>
+                        </div>   
+                      </div>
+                      <div class="form-group" ng-class="{'has-error': form_add.adminname.$invalid && !form_add.adminname.$pristine}">
+                        <label for="firstname" class="col-sm-2 control-label">用户名</label>
+                        <div class="col-sm-10">
+                         <input type="text" class="form-control" name="adminname" ng-model="adminname_add" placeholder="用户名" ng-minlength="2" ng-maxlength="20" required>
+                         <div ng-if="form_add.adminname.$invalid && form_add.adminname.$dirty" >
+                            <p class="help-block" ng-show="form_add.adminname.$error.required">用户名必填</p>
+                            <p class="help-block" ng-show="form_add.adminname.$error.minlength || form_add.adminname.$error.maxlength">用户名的长度在2到20之间</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group" ng-class="{'has-error': form_add.password.$invalid && !form_add.password.$pristine}">
+                        <label for="password" class="col-sm-2 control-label">密码</label>
+                        <div class="col-sm-10">
+                          <input type="password" name="password" ng-model="password" class="form-control" ng-minlength="6" ng-maxlength="16" id="password" placeholder="请输入密码" ng-pattern="/^[^\s]{1,}$/" required>
+                          <div ng-if="form_add.password.$invalid && form_add.password.$dirty">
+                            <p class="help-block" ng-show="form_add.password.$error.required">请输入密码</p>
+                            <p class="help-block" ng-show="form_add.password.$error.pattern">密码不能输入空格</p>
+                            <p class="help-block" ng-show="form_add.password.$error.minlength || form_add.password.$error.maxlength">密码长度为6-16位</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group" ng-class="{'has-error': form_add.passwordagain.$invalid && !form_add.passwordagain.$pristine || passwordagain !== password && !form_add.passwordagain.$pristine }">
+                        <label for="passwordagain" class="col-sm-2 control-label">确认密码</label>
+                        <div class="col-sm-10">
+                          <input type="password" class="form-control" ng-model="passwordagain" id="passwordagain" name="passwordagain" placeholder="请再一次输入密码" required>
+                          <div class="help-block" ng-messages="form_add.passwordagain.$error"  ng-if="passwordagain !== password && form_add.passwordagain.$dirty &&!form_add.passwordagain.$error.required">
+                            <p ng-show="passwordagain !== password">两次密码输入不一致</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-12 marginbottom30px">
+                <div class="row clearfix">
+                  <div class="col-md-11 col-sm-11 column">
+                    <div class="formbox">
+                      <div class="form-group">
+                        <div class="col-sm-2 control-label">性别</div>
+                        <div class="col-sm-10 col-md-10 column">
+                          <label class="checkbox-inline">
+                            <input type="radio" id="sex1_1" ng-model="gender_1" value="男" class="magic-radio" name="sex"><label for="sex1_1"></label>&nbsp;<span class="marginleft">男</span>
+                          </label>
+                          <label class="checkbox-inline">
+                            <input type="radio" id="sex2_1" ng-model="gender_1" value="女" class="magic-radio" name="sex"><label for="sex2_1"></label>&nbsp;<span class="marginleft">女</span>
+                          </label>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-sm-2 control-label">角色</div>
+                        <div class="col-sm-10 col-md-10 column">
+                          <label class="checkbox-inline">
+                            <input type="radio" id="role1_1" ng-model="role_1" value="超级管理员" class="magic-radio" name="role"><label for="role1_1"></label>&nbsp;<span class="marginleft">超级管理员</span>
+                          </label>
+                          <label class="checkbox-inline">
+                            <input type="radio" id="role2_1" ng-model="role_1" value="管理员" class="magic-radio" name="role"><label for="role2_1"></label>&nbsp;<span class="marginleft">管理员</span>
+                          </label>
+                          <label class="checkbox-inline">
+                            <input type="radio" id="role3_1" ng-model="role_1" value="产品经理" class="magic-radio" name="role"><label for="role3_1"></label>&nbsp;<span class="marginleft">产品经理</span>
+                          </label>
+                          <label class="checkbox-inline">
+                            <input type="radio" id="role4_1" ng-model="role_1" value="客服" class="magic-radio" name="role"><label for="role4_1"></label>&nbsp;<span class="marginleft">客服</span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="marginbottom30px col-sm-8 col-sm-offset-2">
+                <button class="btn btn-success" ng-disabled="form_add.$invalid || passwordagain !== password" ng-click="addAdminSubmit()">提交</button>&nbsp;
+              </div>
+            </form>
+          </div>
+          <!-- 修改用户 -->
+          <div ng-show="updateAdmin">
+            <form class="form-horizontal" name="form_update" role="form">
+              <div class="col-sm-12">
+                <div class="row clearfix">
+                  <div class="col-md-11 col-sm-11 column">
+                    <div class="formbox">
+                      <div class="form-group" ng-class="{'has-error': form_update.realname.$invalid && !form_update.realname.$pristine}">
+                        <label for="firstname" class="col-sm-2 control-label">真实姓名</label>
+                        <div class="col-sm-10">
+                          <input type="text" class="form-control" name="realname" ng-model="realname_1" placeholder="姓名" ng-minlength="2" ng-maxlength="20" required>
+                          <div ng-if="form_update.realname.$invalid && form_update.realname.$dirty">
+                            <p class="help-block" ng-show="form_update.realname.$error.required">姓名必填</p>
+                            <p class="help-block" ng-show="form_update.realname.$error.minlength || form_update.realname.$error.maxlength">姓名的长度在2到20之间</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="firstname" class="col-sm-2 control-label">用户名</label>
+                        <div class="col-sm-10">
+                         <span class="form-control" disabled>{{adminname_1}}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-12 marginbottom30px">
+                <div class="row clearfix">
+                  <div class="col-md-11 col-sm-11 column">
+                    <div class="formbox">
+                      <div class="form-group">
+                        <div class="col-sm-2 control-label">性别</div>
+                        <div class="col-sm-10 col-md-10 column">
+                          <label class="checkbox-inline">
+                            <input type="radio" id="sex1" ng-model="gender" value="男" class="magic-radio" name="sex"><label for="sex1"></label>&nbsp;<span class="marginleft">男</span>
+                          </label>
+                          <label class="checkbox-inline">
+                            <input type="radio" id="sex2" ng-model="gender" value="女" class="magic-radio" name="sex"><label for="sex2"></label>&nbsp;<span class="marginleft">女</span>
+                          </label>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-sm-2 control-label">角色</div>
+                        <div class="col-sm-10 col-md-10 column">
+                          <label class="checkbox-inline">
+                            <input type="radio" id="role1" ng-model="role" value="超级管理员" class="magic-radio" name="role"><label for="role1"></label>&nbsp;<span class="marginleft">超级管理员</span>
+                          </label>
+                          <label class="checkbox-inline">
+                            <input type="radio" id="role2" ng-model="role" value="管理员" class="magic-radio" name="role"><label for="role2"></label>&nbsp;<span class="marginleft">管理员</span>
+                          </label>
+                          <label class="checkbox-inline">
+                            <input type="radio" id="role3" ng-model="role" value="产品经理" class="magic-radio" name="role"><label for="role3"></label>&nbsp;<span class="marginleft">产品经理</span>
+                          </label>
+                          <label class="checkbox-inline">
+                            <input type="radio" id="role4" ng-model="role" value="客服" class="magic-radio" name="role"><label for="role4"></label>&nbsp;<span class="marginleft">客服</span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="marginbottom30px col-sm-8 col-sm-offset-2">
+                <button class="btn btn-success" ng-disabled="form_update.$invalid" ng-click="updateAdminSubmit()">提交</button>&nbsp;
+                <button ng-click="passwordReset()" class="btn btn-warning">密码重置</button>&nbsp;
+                <button class="btn btn-danger" ng-click="delAdmin()">删除</button>&nbsp;
+              </div>
+            </form>
+          </div>
+          <div class="clear"></div>
+        </div>
+      </div>
+      <!-- 客户管理 -->
+      <div class="custom manage" id="custom_page">
+        <ul class="breadcrumb">
+          <li><a ng-click="toHome()">主页</a></li>
+          <li class="active" id="custom_manage"><a ng-click="toUser()">客户管理</a></li>
+        </ul>
+        <div class="title"><i class="fa fa-users"></i>&nbsp;&nbsp;客户管理</div>
+        <div class="well">
+          <!-- 所有用户 -->
+          <div ng-show="allUser">
+            <table class="table" st-table="displayedUser" st-safe-src="user">
+              <thead>
+                <tr>
+                  <th colspan="6">
+                    <div class="searchbox col-sm-12 none-padding">
+                      <i class="searchicon glyphicon glyphicon-search"></i>
+                      <input class="form-control" st-search placeholder="请输入姓名、性别、级别、手机、地址 查询" class="input form-control" type="search"/>
+                    </div>
+                  </th>
+                  <th colspan="2">
+                    <div class="adduser">
+                      <a class="btn btn-success btn-sm" ng-click="addUsers()">
+                        <i class="fa fa-user-plus"></i>&nbsp;新增客户
+                      </a>
+                    </div>
+                  </th>
+                </tr>
+                <tr>
+                  <th>序号</th>
+                  <th st-sort="username" class="col-sm-2" style="cursor: pointer;">姓名</th>
+                  <th st-sort="gender" style="cursor: pointer;">性别</th>
+                  <th st-sort="identify" style="cursor: pointer;">用户级别</th>
+                  <th st-sort="phone" style="cursor: pointer;">手机</th>
+                  <th st-sort="address" style="cursor: pointer;">地址</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="item in displayedUser">
+                  <td>{{$index+1}}</td>
+                  <td>{{item.username}}</td>
+                  <td>{{item.gender}}</td>
+                  <td>{{item.identify}}</td>
+                  <td>{{item.phone}}</td>
+                  <td>{{item.address.substr(0,16)}}<br>{{item.address.substr(16)}}</td>
+                  <td><a ng-click="delUser(item.userid)">删除</a></td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td colspan="8" class="text-center">
+                    <ul class="pages" ng-show="dataLength > 10">
+                      <li><a href="" ng-click="prevPage()">上一页</a></li>
+                      <li><a href="" ng-class="{'actives':currentPage == '1'}" ng-click="currentPages(1)">1</a></li>
+                      <li><a href="" ng-class="{'actives':currentPage == '2'}" ng-click="currentPages(2)">2</a></li>
+                      <li ng-show="dataLength >20" ng-class="{'actives':currentPage == '3'}" ng-click="currentPages(3)"><a href="">3</a></li>
+                      <li ng-show="dataLength >30" ng-class="{'actives':currentPage == '4'}" ng-click="currentPages(4)"><a href="">3</a></li>
+                      <li ng-show="dataLength >40" ng-class="{'actives':currentPage == '5'}" ng-click="currentPages(5)"><a href="">3</a></li>
+                      <li ng-show="dataLength >50" ng-class="{'actives':currentPage == '6'}" ng-click="currentPages(6)"><a href="">3</a></li>
+                      <li ng-show="dataLength >60" ng-class="{'actives':currentPage == '7'}" ng-click="currentPages(7)"><a href="">3</a></li>
+                      <li ng-show="dataLength >70" ng-class="{'actives':currentPage == '8'}" ng-click="currentPages(8)"><a href="">3</a></li>
+                      <li><a href="" ng-click="nextPage()">下一页</a></li>
+                    </ul>
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+          <!-- 新增用户 -->
+          <div ng-show="addUser">
+            <form class="form-horizontal" name="form_addUser" role="form">
+              <div class="col-sm-12">
+                <div class="row clearfix">
+                  <div class="col-md-11 col-sm-11 column">
+                    <div class="formbox">
+                      <div class="form-group" ng-class="{'has-error': form_addUser.username.$invalid && !form_addUser.username.$pristine}">
+                        <label for="firstname" class="col-sm-2 control-label">姓名</label>
+                        <div class="col-sm-10">
+                          <input type="text" class="form-control" name="username" ng-model="username" placeholder="姓名" ng-minlength="2" ng-maxlength="20" required>
+                          <div ng-if="form_addUser.username.$invalid && form_addUser.username.$dirty">
+                            <p class="help-block" ng-show="form_addUser.username.$error.required">姓名必填</p>
+                            <p class="help-block" ng-show="form_addUser.username.$error.minlength || form_addUser.username.$error.maxlength">姓名的长度在2到20之间</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group" ng-class="{'has-error': form_addUser.phone.$invalid && !form_addUser.phone.$pristine}">
+                        <label for="firstname" class="col-sm-2 control-label">手机</label>
+                        <div class="col-sm-10">
+                         <input type="tel" class="form-control" name="phone" ng-model="phone" placeholder="手机" ng-minlength="11" ng-maxlength="11" ng-pattern="/^1[3|5][0-9]\d{8}$/">
+                          <div ng-if="form_addUser.phone.$invalid && form_addUser.phone.$dirty">
+                            <p class="help-block" ng-show="form_addUser.phone.$error">请输入正确的手机号码</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group" ng-class="{'has-error': form_addUser.address.$invalid && !form_addUser.address.$pristine}">
+                        <label for="firstname" class="col-sm-2 control-label">地址</label>
+                        <div class="col-sm-10">
+                          <input type="text" class="form-control" name="address" ng-model="address" placeholder="地址" ng-maxlength="50">
+                          <div ng-if="form_addUser.address.$invalid && form_addUser.address.$dirty">
+                            <p class="help-block" ng-show="form_addUser.address.$error">地址长度不能超过50</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-12 marginbottom30px">
+                <div class="row clearfix">
+                  <div class="col-md-11 col-sm-11 column">
+                    <div class="formbox">
+                      <div class="form-group">
+                        <div class="col-sm-2 control-label">性别</div>
+                        <div class="col-sm-10 col-md-10 column">
+                          <label class="checkbox-inline">
+                            <input type="radio" id="sex1_2" ng-model="gender_addUser" value="男" class="magic-radio" name="sex"><label for="sex1_2"></label>&nbsp;<span class="marginleft">男</span>
+                          </label>
+                          <label class="checkbox-inline">
+                            <input type="radio" id="sex2_2" ng-model="gender_addUser" value="女" class="magic-radio" name="sex"><label for="sex2_2"></label>&nbsp;<span class="marginleft">女</span>
+                          </label>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-sm-2 control-label">用户级别</div>
+                        <div class="col-sm-10 col-md-10 column">
+                          <label class="checkbox-inline">
+                            <input type="radio" id="role1_2" ng-model="role_addUser" value="超级会员" class="magic-radio" name="role"><label for="role1_2"></label>&nbsp;<span class="marginleft">超级会员</span>
+                          </label>
+                          <label class="checkbox-inline">
+                            <input type="radio" id="role2_2" ng-model="role_addUser" value="普通会员" class="magic-radio" name="role"><label for="role2_2"></label>&nbsp;<span class="marginleft">普通会员</span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="marginbottom30px col-sm-8 col-sm-offset-2">
+                <button class="btn btn-success" ng-disabled="form_addUser.$invalid" ng-click="addUserSubmit()">提交</button>&nbsp;
+              </div>
+            </form>
+          </div>
+          <div class="clear"></div>
+        </div>
+      </div>
+      <!-- 产品管理 -->
+      <div class="product manage" id="product_page">
+        <!-- 所有食品 -->
+        <div ng-show="allFood">
+          <!-- 导航栏-->
+          <ul id="myTab" class="nav nav-tabs">
+            <li ng-class="{'active':state=='1'}" ng-click="getTotalItems(1)"><a href="" data-toggle="tab">已上架</a></li>
+            <li ng-class="{'active':state=='0'}" ng-click="getTotalItems(0)"><a href="" data-toggle="tab">未上架</a></li>
+          </ul><br>
+          <ul class="nav nav-pills" id="myTab2" role="tablist">
+            <li role="presentation" ng-class="{'active':foodnum==0}" ng-click="getModelItems('0')">
+              <a href="" role="tab" data-toggle="tab">当季特选</a>
+            </li>
+            <li role="presentation" ng-class="{'active':foodnum==1}" ng-click="getModelItems('1')">
+              <a href="" role="tab" data-toggle="tab">披萨</a>
+            </li>
+            <li role="presentation" class="dropdown" ng-class="{'active':foodnum==8||foodnum==9||foodnum==10}">
+              <a role="tab" data-toggle="dropdown" ng-mouseenter="littleShow(8)" ng-click="getModelItems(8,9,10)">主食<span class="caret"></span></a>
+              <ul class="dropdown-menu food_little" id="food_8">
+                <li><a data-toggle="tab" role="presentation" ng-click="getModelItems('8')">饭食</a></li>
+                <li><a data-toggle="tab" role="presentation" ng-click="getModelItems('9')">意面</a></li>
+                <li><a data-toggle="tab" role="presentation" ng-click="getModelItems('10')">米线</a></li>
+              </ul>
+            </li>
+            <li role="presentation" ng-click="getModelItems('2')" ng-class="{'active':foodnum==2}">
+              <a href="" role="tab" data-toggle="tab">好多翅</a>
+            </li>
+            <li role="presentation" ng-click="getModelItems('3')" ng-class="{'active':foodnum==3}">
+              <a href="" role="tab" data-toggle="tab">饮料</a>
+            </li>
+            <li role="presentation" ng-class="{'active':foodnum==11||foodnum==12||foodnum==13}">
+               <a role="tab" data-toggle="dropdown" ng-mouseenter="littleShow(11)" ng-click="getModelItems(11,12,13)">小食组<span class="caret"></span></a>
+              <ul class="dropdown-menu food_little" id="food_11">
+                <li><a data-toggle="tab" role="presentation" ng-click="getModelItems('11')">小吃</a></li>
+                <li><a data-toggle="tab" role="presentation" ng-click="getModelItems('12')">汤</a></li>
+                <li><a data-toggle="tab" role="presentation" ng-click="getModelItems('13')">甜点</a></li>
+              </ul>
+            </li>
+            <li role="presentation" ng-click="getModelItems('4')" ng-class="{'active':foodnum==4}">
+              <a href="" role="tab" data-toggle="tab">沙拉和鲜蔬</a>
+            </li>
+            <li role="presentation" ng-click="getModelItems('5')" ng-class="{'active':foodnum==5}">
+              <a href="" role="tab" data-toggle="tab">超值套餐</a>
+            </li>
+            <li role="presentation" ng-click="getModelItems('6')" ng-class="{'active':foodnum==6}">
+              <a href="" role="tab" data-toggle="tab">工作日午餐</a>
+            </li>
+            <li role="presentation" ng-click="getModelItems('7')" ng-class="{'active':foodnum==7}">
+              <a href="" role="tab" data-toggle="tab">超值下午茶</a>
+            </li>
+          </ul>
+          <div>
+            <span style="margin: 8px; float: right">
+              <a class="btn btn-success" ng-click="addFoods()">
+                <span class="glyphicon glyphicon-plus"></span>添加一件商品</a>
+            </span>
+          </div>
+          <div class="clearfix"></div>
+          <!-- 列表-->
+          <div class="foods-list">
+            <div class="row">
+              <div class="col-md-3">产品名称</div>
+              <div class="col-md-2">产品种类</div>
+              <div class="col-md-1">价格</div>
+              <div class="col-md-3">样品图</div>
+              <div class="col-md-2">创建时间</div>
+              <div class="col-md-1">操作</div>
+            </div>
+            <div class="row" ng-repeat="item in food">
+              <div class="col-md-3"><a ng-click="updateFoods(item.foodid)">{{item.title}}</a></div>
+              <div class="col-md-2">{{variety[item.foodnum].name}}</div>
+              <div class="col-md-1">{{item.price}}</div>
+              <div class="col-md-3"><img src="{{item.logourl}}" alt=""></div>
+              <div class="col-md-2">{{item.time | date:'yyyy-MM-dd'}}</div>
+              <div class="col-md-1"><a href="" ng-click="delFood(item.foodid,item.logourl)">删除</a>
+              </div>
+            </div>
+            <div class="row page">
+              <ul class="pages" ng-show="dataLength > 10">
+                <li><a href="" ng-click="prevPage()">上一页</a></li>
+                <li><a href="" ng-class="{'actives':currentPage == '1'}" ng-click="currentPages(1)">1</a></li>
+                <li><a href="" ng-class="{'actives':currentPage == '2'}" ng-click="currentPages(2)">2</a></li>
+                <li ng-show="dataLength >20"><a href="" ng-class="{'actives':currentPage == '3'}" ng-click="currentPages(3)">3</a></li>
+                <li ng-show="dataLength >30"><a href="" ng-class="{'actives':currentPage == '4'}" ng-click="currentPages(4)">4</a></li>
+                <li ng-show="dataLength >40"><a href="" ng-class="{'actives':currentPage == '5'}" ng-click="currentPages(5)">5</a></li>
+                <li ng-show="dataLength >50"><a href="" ng-class="{'actives':currentPage == '6'}" ng-click="currentPages(6)">6</a></li>
+                <li ng-show="dataLength >60"><a href="" ng-class="{'actives':currentPage == '7'}" ng-click="currentPages(7)">7</a></li>
+                <li ng-show="dataLength >70"><a href="" ng-class="{'actives':currentPage == '8'}" ng-click="currentPages(8)">8</a></li>
+                <li ng-show="dataLength >80"><a href="" ng-class="{'actives':currentPage == '9'}" ng-click="currentPages(9)">9</a></li>
+                <li><a href="" ng-click="nextPage()">下一页</a></li>
+              </ul>
+            </div> 
+          </div>
+        </div>
+        <!-- 新增食品 -->
+        <div ng-show="addFood">
+          <ul class="breadcrumb">
+            <li><a ng-click="toHome()">主页</a></li>
+            <li><a ng-click="toFood()">产品管理</a></li>
+            <li class="active"><a>产品新增</a></li>
+          </ul>
+          <div class="title"><i class="fa fa-cutlery"></i>&nbsp;&nbsp;产品管理</div>
+          <div class="well">
+            <form class="form-horizontal" name="form_addFood" role="form">
+              <div class="col-sm-12">
+                <div class="row clearfix">
+                  <div class="col-md-11 col-sm-11 column">
+                    <div class="formbox">
+                      <div class="form-group" ng-class="{'has-error': form_addFood.title.$invalid && !form_addFood.title.$pristine}">
+                        <label for="firstname" class="col-sm-2 control-label">产品名称</label>
+                        <div class="col-sm-10">
+                          <input type="text" class="form-control" name="title" ng-model="add.title" placeholder="产品名称" required ng-maxlength="14" >
+                          <div ng-if="form_addFood.title.$invalid && form_addFood.title.$dirty">
+                            <p class="help-block" ng-show="form_addFood.title.$error.required">价格必填</p>
+                            <p class="help-block" ng-show="form_addFood.title.$error.maxlength">产品名称不可超过14个字</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group" ng-class="{'has-error': !add.foodnum}">
+                        <label for="firstname" class="col-sm-2 control-label">产品种类</label>
+                        <div class="col-sm-10">
+                          <select class="form-control" name="foodnum" ng-model="add.foodnum" ng-options="x.id as x.name for x in variety" required></select>
+                          <div ng-if="form_addFood.foodnum.$invalid && form_addFood.foodnum.$dirty">
+                            <p class="help-block" ng-show="form_addFood.foodnum.$error.required">请选择种类</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group" ng-class="{'has-error': form_addFood.price.$invalid && !form_addFood.price.$pristine}">
+                        <label for="firstname" class="col-sm-2 control-label">价格</label>
+                        <div class="col-sm-10">
+                          <input type="text" class="form-control" name="price" ng-model="add.price" placeholder="价格" required>
+                          <div ng-if="form_addFood.price.$invalid && form_addFood.price.$dirty">
+                            <p class="help-block" ng-show="form_addFood.price.$error">价格必填</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group" ng-class="{'has-error': form_addFood.describe.$invalid && !form_addFood.describe.$pristine}">
+                        <label for="firstname" class="col-sm-2 control-label">产品描述</label>
+                        <div class="col-sm-10">
+                          <input type="text" class="form-control" name="describe" ng-model="add.describe" placeholder="产品描述" ng-maxlength="10">
+                          <div ng-if="form_addFood.describe.$invalid && form_addFood.describe.$dirty">
+                            <p class="help-block" ng-show="form_addFood.describe.$error">产品描述不可超过10个字</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group" ng-class="{'has-error': form_addFood.foodinfo.$invalid && !form_addFood.foodinfo.$pristine}">
+                        <label for="firstname" class="col-sm-2 control-label">产品详情</label>
+                        <div class="col-sm-10">
+                          <textarea rows="3" class="form-control" name="foodinfo"  ng-model="add.foodinfo" required></textarea>
+                          <div ng-if="form_addFood.foodinfo.$invalid && form_addFood.foodinfo.$dirty">
+                            <p class="help-block" ng-show="form_addFood.foodinfo.$error">产品详情必填</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-12 marginbottom30px">
+                <div class="row clearfix">
+                  <div class="col-md-11 col-sm-11 column">
+                    <div class="formbox">
+                      <div class="form-group">
+                        <div class="col-sm-2 control-label">产品特色</div>
+                        <div class="col-sm-10 col-md-10 column">
+                          <label class="checkbox-inline">
+                            <input type="radio" id="taste1" ng-model="add.taste" value="人气" class="magic-radio" name="taste"><label for="taste1"></label>&nbsp;<span class="marginleft">人气</span>
+                          </label>
+                          <label class="checkbox-inline">
+                            <input type="radio" id="taste2" ng-model="add.taste" value="爆款" class="magic-radio" name="taste"><label for="taste2"></label>&nbsp;<span class="marginleft">爆款</span>
+                          </label>
+                          <label class="checkbox-inline">
+                            <input type="radio" id="taste3" ng-model="add.taste" value="新品" class="magic-radio" name="taste"><label for="taste3"></label>&nbsp;<span class="marginleft">新品</span>
+                          </label>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-sm-2 control-label">产品状态</div>
+                        <div class="col-sm-10 col-md-10 column">
+                          <label class="checkbox-inline">
+                            <input type="radio" id="state1" ng-model="add.state" value="0" class="magic-radio" name="state"><label for="state1"></label>&nbsp;<span class="marginleft">未上架</span>
+                          </label>
+                          <label class="checkbox-inline">
+                            <input type="radio" id="state2" ng-model="add.state" value="1" class="magic-radio" name="state"><label for="state2"></label>&nbsp;<span class="marginleft">已上架</span>
+                          </label>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-sm-2 control-label">产品图片</div>
+                        <div class="col-sm-10 col-md-10 column">
+                          <div class="imgDiv"><input type="file" class="file" id="img_add"><img src="" id="logourl_add" alt=""><span class="red">提示：请点击上传产品图片</span></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="marginbottom30px col-sm-8 col-sm-offset-2">
+                <button class="btn btn-success" ng-disabled="form_addFood.$invalid" ng-click="addFoodSubmit()">提交</button>
+              </div>
+            </form>
+          </div>
+        </div>
+        <!-- 修改食品 -->
+        <div ng-show="updateFood">
+          <ul class="breadcrumb">
+            <li><a ng-click="toHome()">主页</a></li>
+            <li><a ng-click="toFood()">产品管理</a></li>
+            <li class="active"><a>产品修改</a></li>
+          </ul>
+          <div class="title"><i class="fa fa-cutlery"></i>&nbsp;&nbsp;产品管理</div>
+          <div class="well">
+            <form class="form-horizontal" name="form_updateFood" role="form">
+              <div class="col-sm-12">
+                <div class="row clearfix">
+                  <div class="col-md-11 col-sm-11 column">
+                    <div class="formbox">
+                      <div class="form-group">
+                        <label for="firstname" class="col-sm-2 control-label">产品名称</label>
+                        <div class="col-sm-10">
+                          <span class="form-control" disabled>{{update.title}}</span>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="firstname" class="col-sm-2 control-label">产品种类</label>
+                        <div class="col-sm-10">
+                          <select class="form-control" ng-model="update.foodnum" ng-options="x.id as x.name for x in variety"></select>
+                        </div>
+                      </div>
+                      <div class="form-group" ng-class="{'has-error': form_updateFood.price.$invalid && !form_updateFood.price.$pristine}">
+                        <label for="firstname" class="col-sm-2 control-label">价格</label>
+                        <div class="col-sm-10">
+                          <input type="text" class="form-control" name="price" ng-model="update.price" placeholder="价格" required>
+                          <div ng-if="form_updateFood.price.$invalid && form_updateFood.price.$dirty">
+                            <p class="help-block" ng-show="form_updateFood.price.$error">价格必填</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group" ng-class="{'has-error': form_updateFood.describe.$invalid && !form_updateFood.describe.$pristine}">
+                        <label for="firstname" class="col-sm-2 control-label">产品描述</label>
+                        <div class="col-sm-10">
+                          <input type="text" class="form-control" name="describe" ng-model="update.describe" placeholder="产品描述" ng-maxlength="10">
+                          <div ng-if="form_updateFood.describe.$invalid && form_updateFood.describe.$dirty">
+                            <p class="help-block" ng-show="form_updateFood.describe.$error">产品描述不可超过10个字</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group" ng-class="{'has-error': form_updateFood.foodinfo.$invalid && !form_updateFood.foodinfo.$pristine}">
+                        <label for="firstname" class="col-sm-2 control-label">产品详情</label>
+                        <div class="col-sm-10">
+                          <textarea rows="3" class="form-control" name="foodinfo"  ng-model="update.foodinfo" required></textarea>
+                          <div ng-if="form_updateFood.foodinfo.$invalid && form_updateFood.foodinfo.$dirty">
+                            <p class="help-block" ng-show="form_updateFood.foodinfo.$error">产品详情必填</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-12 marginbottom30px">
+                <div class="row clearfix">
+                  <div class="col-md-11 col-sm-11 column">
+                    <div class="formbox">
+                      <div class="form-group">
+                        <div class="col-sm-2 control-label">产品特色</div>
+                        <div class="col-sm-10 col-md-10 column">
+                          <label class="checkbox-inline">
+                            <input type="radio" id="taste1" ng-model="update.taste" value="人气" class="magic-radio" name="taste"><label for="taste1"></label>&nbsp;<span class="marginleft">人气</span>
+                          </label>
+                          <label class="checkbox-inline">
+                            <input type="radio" id="taste2" ng-model="update.taste" value="爆款" class="magic-radio" name="taste"><label for="taste2"></label>&nbsp;<span class="marginleft">爆款</span>
+                          </label>
+                          <label class="checkbox-inline">
+                            <input type="radio" id="taste3" ng-model="update.taste" value="新品" class="magic-radio" name="taste"><label for="taste3"></label>&nbsp;<span class="marginleft">新品</span>
+                          </label>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-sm-2 control-label">产品状态</div>
+                        <div class="col-sm-10 col-md-10 column">
+                          <label class="checkbox-inline">
+                            <input type="radio" id="state1" ng-model="update.state" value="0" class="magic-radio" name="state"><label for="state1"></label>&nbsp;<span class="marginleft">未上架</span>
+                          </label>
+                          <label class="checkbox-inline">
+                            <input type="radio" id="state2" ng-model="update.state" value="1" class="magic-radio" name="state"><label for="state2"></label>&nbsp;<span class="marginleft">已上架</span>
+                          </label>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-sm-2 control-label">产品图片</div>
+                        <div class="col-sm-10 col-md-10 column">
+                          <div class="imgDiv"><input type="file" class="file" id="img_update"><img src="{{update.logourl}}" id="logourl" alt=""><span class="red">提示：请点击图片更改产品图片</span></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="marginbottom30px col-sm-8 col-sm-offset-2">
+                <button class="btn btn-success" ng-disabled="form_updateFood.$invalid" ng-click="updateFoodSubmit()">提交</button>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="clear"></div>
+      </div>
+      <!-- 订单管理 -->
+      <div class="order manage" id="order_page">
+        <!-- 所有订单 -->
+        <div ng-show="allOrder">
+          <!-- 导航栏-->
+          <ul id="myTab" class="nav nav-tabs">
+            <li ng-class="{'active':prosess=='0'}" ng-click="getOrderProsess(0)"><a href="" data-toggle="tab">待处理</a></li>
+            <li ng-class="{'active':prosess=='1'}" ng-click="getOrderProsess(1)"><a href="" data-toggle="tab">正处理</a></li>
+            <li ng-class="{'active':prosess=='2'}" ng-click="getOrderProsess(2)"><a href="" data-toggle="tab">已处理</a></li>
+            <li ng-class="{'active':prosess=='3'}" ng-click="getOrderProsess(3)"><a href="" data-toggle="tab">待评价</a></li>
+            <li ng-class="{'active':prosess=='4'}" ng-click="getOrderProsess(4)"><a href="" data-toggle="tab">已完成</a></li>
+            <li ng-class="{'active':prosess=='5'}" ng-click="getOrderProsess(5)"><a href="" data-toggle="tab">已取消</a></li>
+          </ul><br>
+          <!-- 列表-->
+          <div class="foods-list">
+            <div class="row">
+              <div class="col-md-2">订单编号</div>
+              <div class="col-md-1">类型</div>
+              <div class="col-md-2">总价</div>
+              <div class="col-md-3">创建时间</div>
+              <div class="col-md-2">备注</div>
+              <div class="col-md-2">操作</div>
+            </div>
+            <div class="row" ng-repeat="item in order">
+              <div class="col-md-2"><a ng-click="orderInfoOpen(item.orderid)">{{item.orderid}}</a></div>
+              <div class="col-md-1" ng-show="{{item.state=='1'}}">外卖</div>
+              <div class="col-md-1" ng-show="{{item.state=='2'}}">堂食</div>
+              <div class="col-md-2">¥{{item.fullPrice}}</div>
+              <div class="col-md-3">{{item.createtime | date:'yyyy-MM-dd HH:mm:ss'}}</div>
+              <div class="col-md-2">{{item.remark}}</div>
+              <div class="col-md-2">
+                <a href="" ng-show="{{item.prosess=='0'}}" ng-click="manageOrder(item.orderid,item.state,item.prosess)">接单</a>
+                <a href="" ng-show="{{item.prosess=='1'}}" ng-click="manageOrder(item.orderid,item.state,item.prosess)">已出餐</a>
+                <a href="" ng-show="{{item.prosess=='2'}}" ng-click="manageOrder(item.orderid,item.state,item.prosess)">已结账</a>
+                <a href="" ng-show="{{item.prosess=='3'}}" ng-click="defaultCommentSubmit(item.orderid,item.userid,item.prosess)">默认评价</a>
+                <a href="" ng-show="{{item.prosess=='4'}}" ng-click="delOrder(item.orderid,item.prosess)">删除</a>
+                <a href="" ng-show="{{item.prosess=='5'}}" ng-click="delOrder(item.orderid,item.prosess)">删除</a>
+              </div>
+            </div>
+            <div class="row page">
+              <ul class="pages" ng-show="dataLength > 10">
+                <li><a href="" ng-click="prevPage()">上一页</a></li>
+                <li><a href="" ng-class="{'actives':currentPage == '1'}" ng-click="currentPages(1)">1</a></li>
+                <li><a href="" ng-class="{'actives':currentPage == '2'}" ng-click="currentPages(2)">2</a></li>
+                <li ng-show="dataLength >20"><a href="" ng-class="{'actives':currentPage == '3'}" ng-click="currentPages(3)">3</a></li>
+                <li ng-show="dataLength >30"><a href="" ng-class="{'actives':currentPage == '4'}" ng-click="currentPages(4)">4</a></li>
+                <li ng-show="dataLength >40"><a href="" ng-class="{'actives':currentPage == '5'}" ng-click="currentPages(5)">5</a></li>
+                <li ng-show="dataLength >50"><a href="" ng-class="{'actives':currentPage == '6'}" ng-click="currentPages(6)">6</a></li>
+                <li ng-show="dataLength >60"><a href="" ng-class="{'actives':currentPage == '7'}" ng-click="currentPages(7)">7</a></li>
+                <li ng-show="dataLength >70"><a href="" ng-class="{'actives':currentPage == '8'}" ng-click="currentPages(8)">8</a></li>
+                <li ng-show="dataLength >80"><a href="" ng-class="{'actives':currentPage == '9'}" ng-click="currentPages(9)">9</a></li>
+                <li><a href="" ng-click="nextPage()">下一页</a></li>
+              </ul>
+            </div> 
+          </div>
+        </div>
+        <div ng-show="orderInfo">
+          <ul class="breadcrumb">
+            <li><a ng-click="toHome()">主页</a></li>
+            <li><a ng-click="toOrder()">订单管理</a></li>
+            <li class="active"><a>订单详情</a></li>
+          </ul>
+          <div class="title"><i class="fa fa-indent"></i>&nbsp;&nbsp;订单管理</div>
+          <div class="orderInfo">
+            <div>
+              <span class="left">订单状态:</span>
+              <span class="right red">{{orderInfos.processName}}</span>
+            </div>
+            <div>
+              <span class="left">订单编号:</span>
+              <span class="right">{{orderInfos.orderid}}</span>
+            </div>
+            <div>
+              <span class="left">用户编号:</span>
+              <span class="right">{{orderInfos.userid}}</span>
+            </div>
+            <div>
+              <span class="left">订单类型:</span>
+              <span class="right" ng-show="orderState1">外卖</span>
+              <span class="right" ng-show="orderState2">堂食</span>
+            </div>
+            <div>
+              <span class="left">下单时间:</span>
+              <span class="right">{{orderInfos.createtime | date:'yyyy-MM-dd HH:mm:ss'}}</span>
+            </div>
+            <div class="remark">
+              <span class="left">订单备注:</span><br>
+              <span class="right">{{orderInfos.remark}}</span>
+            </div>
+          </div>
+          <div class="foods-list" ng-show="orderState1">
+            <div class="row orderInfoTitle">
+              <div class="col-md-2">配送方式</div>
+              <div class="col-md-4">{{orderInfos.status=='商家配送'?'地址信息':'自提时间'}}</div>
+              <div class="col-md-2">支付方式</div>
+              <div class="col-md-2">收货人</div>
+              <div class="col-md-2">联系电话</div>
+            </div>
+            <div class="row">
+              <div class="col-md-2"><img src="{{orderInfos.logourl}}" alt="">{{orderInfos.status}}</div>
+              <div class="col-md-4">{{orderInfos.status=='商家配送'?orderAddress.area+orderAddress.details:orderInfos.inviteTime}}</div>
+              <div class="col-md-2">{{orderInfos.payway=='online'?'在线支付':'货到付款'}}</div>
+              <div class="col-md-2">{{orderAddress.addressname}}</div>
+              <div class="col-md-2">{{orderAddress.tel}}</div>
+            </div>
+          </div>  
+          <div class="foods-list">
+            <div class="row orderInfoTitle">
+              <div class="col-md-4">商品名称</div>
+              <div class="col-md-2">类型</div>
+              <div class="col-md-2">价格</div>
+              <div class="col-md-2">数量</div>
+              <div class="col-md-2">小计</div>
+            </div>
+            <div class="row foodInfos" ng-repeat="item in orderlist">
+              <div class="col-md-4"><img src="{{item.logourl}}" alt="">{{item.title}}</div>
+              <div class="col-md-2">{{variety[item.foodnum].name}}</div>
+              <div class="col-md-2">¥{{item.price}}</div>
+              <div class="col-md-2">{{item.num}}</div>
+              <div class="col-md-2">¥{{item.price*item.num}}</div>
+            </div>
+          </div>
+          <div class="foods-list all_price">
+            <div class="row orderInfoTitle">
+              <span class="left">订单总价:</span>
+              <span class="right red">¥{{orderInfos.fullPrice}}</span>
+            </div>
+            <div class="row orderInfoTitle">
+              <a href="" class="btn btn-success" id="prosess0" ng-click="manageOrder(orderInfos.orderid,orderInfos.state,orderInfos.prosess)">接单</a>
+              <a href="" class="btn btn-success" id="prosess1" ng-click="manageOrder(orderInfos.orderid,orderInfos.state,orderInfos.prosess)">已出餐</a>
+              <a href="" class="btn btn-success" id="prosess2" ng-click="manageOrder(orderInfos.orderid,orderInfos.state,orderInfos.prosess)">已结账</a>
+              <a href="" class="btn btn-success" id="prosess3" ng-click="defaultCommentSubmit(orderInfos.orderid,orderInfos.userid,orderInfos.prosess)">默认评价</a>
+              <a href="" class="btn btn-success" id="prosess4" ng-click="delOrder(orderInfos.orderid,item.prosess)">删除</a>
+              <a href="" class="btn btn-success" id="prosess5" ng-click="delOrder(orderInfos.orderid,item.prosess)">删除</a>
+            </div>
+          </div>  
+        </div>
+      </div>
+      <div class="comment manage" id="comment_page">
+        <!-- 导航栏-->
+        <ul id="myTab" class="nav nav-tabs">
+          <li ng-class="{'active':commentState=='0'}" ng-click="getCommentState('0')"><a href="" data-toggle="tab">待审核</a></li>
+          <li ng-class="{'active':commentState=='1'}" ng-click="getCommentState('1')"><a href="" data-toggle="tab">已发布</a></li>
+          <li ng-class="{'active':commentState=='2'}" ng-click="getCommentState('2')"><a href="" data-toggle="tab">已撤回</a></li>
+        </ul><br>
+        <!-- 列表-->
+        <div class="foods-list">
+          <div class="row">
+            <div class="col-md-2">客户名称</div>
+            <div class="col-md-1">星级</div>
+            <div class="col-md-3">评价时间</div>
+            <div class="col-md-4">评价内容</div>
+            <div class="col-md-2">操作</div>
+          </div>
+          <div class="row" ng-repeat="item in comment">
+            <div class="col-md-2">{{item.userName}}</div>
+            <div class="col-md-1">{{item.star}}</div>
+            <div class="col-md-3">{{item.createtime | date:'yyyy-MM-dd HH:mm:ss'}}</div>
+            <div class="col-md-4">{{item.content}}</div>
+            <div class="col-md-2" ng-show="{{item.state=='0'}}">
+              <button class="btn btn-success" ng-click="updateCommentState(item.commentid,'1')">发布</button>&nbsp;
+              <button class="btn btn-danger" ng-click="updateCommentState(item.commentid,'2')">撤回</button>&nbsp;
+            </div>
+            <div class="col-md-2" ng-show="{{item.state=='1'}}">
+              <button class="btn btn-danger" ng-click="updateCommentState(item.commentid,'2')">撤回</button>&nbsp;
+            </div>
+            <div class="col-md-2" ng-show="{{item.state=='2'}}">
+              <button class="btn btn-danger" ng-click="delcomment(item.commentid)">删除</button>&nbsp;
+            </div>
+          </div>
+          <div class="row page">
+            <ul class="pages" ng-show="dataLength > 10">
+              <li><a href="" ng-click="prevPage()">上一页</a></li>
+              <li><a href="" ng-class="{'actives':currentPage == '1'}" ng-click="currentPages(1)">1</a></li>
+              <li><a href="" ng-class="{'actives':currentPage == '2'}" ng-click="currentPages(2)">2</a></li>
+              <li ng-show="dataLength >20"><a href="" ng-class="{'actives':currentPage == '3'}" ng-click="currentPages(3)">3</a></li>
+              <li ng-show="dataLength >30"><a href="" ng-class="{'actives':currentPage == '4'}" ng-click="currentPages(4)">4</a></li>
+              <li ng-show="dataLength >40"><a href="" ng-class="{'actives':currentPage == '5'}" ng-click="currentPages(5)">5</a></li>
+              <li ng-show="dataLength >50"><a href="" ng-class="{'actives':currentPage == '6'}" ng-click="currentPages(6)">6</a></li>
+              <li ng-show="dataLength >60"><a href="" ng-class="{'actives':currentPage == '7'}" ng-click="currentPages(7)">7</a></li>
+              <li ng-show="dataLength >70"><a href="" ng-class="{'actives':currentPage == '8'}" ng-click="currentPages(8)">8</a></li>
+              <li ng-show="dataLength >80"><a href="" ng-class="{'actives':currentPage == '9'}" ng-click="currentPages(9)">9</a></li>
+              <li><a href="" ng-click="nextPage()">下一页</a></li>
+            </ul>
+          </div> 
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer class="text-center">
+    <div style="font-size:14px">
+     Copyright © 2016-2017 必胜客订餐系统
+    </div>
+  </footer>
+</div>
